@@ -1,0 +1,133 @@
+/* ---------------------------
+   HEADER & NAVBAR
+--------------------------- */
+.site-header {
+  background: linear-gradient(to bottom, #111, #1a1a1a);
+  border-bottom: 2px solid #ff4655;
+}
+
+.navbar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  position: relative;
+}
+
+.navbar-links {
+  display: flex;
+  list-style: none;
+  flex-wrap: wrap; /* ensures vertical stacking on small screens */
+}
+
+/* Hamburger Menu Styling */
+.hamburger-menu {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 21px;
+  cursor: pointer;
+  position: absolute;
+  left: 20px;
+  z-index: 10;
+}
+
+.bar1, .bar2, .bar3 {
+  width: 100%;
+  height: 3px;
+  background-color: #fff;
+  transition: 0.4s;
+  border-radius: 2px;
+}
+
+/* Hamburger animation classes */
+.hamburger-menu.change .bar1 {
+  transform: rotate(-45deg) translate(-5px, 6px);
+}
+
+.hamburger-menu.change .bar2 {
+  opacity: 0;
+}
+
+.hamburger-menu.change .bar3 {
+  transform: rotate(45deg) translate(-5px, -6px);
+}
+
+/*
+  Prevent layout shift on hover:
+  Unified padding for normal and hover states.
+*/
+.navbar-links li {
+  position: relative;
+  padding: 0 1rem;
+}
+
+.navbar-links li:not(:last-child)::after {
+  content: "|";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #777;
+}
+
+.navbar-links li a {
+  display: inline-block;
+  padding: 0.5rem 0.75rem; /* same padding for all states */
+}
+
+.navbar-links li a.active,
+.navbar-links li a:hover {
+  background-color: #ff4655;
+  border-radius: 4px;
+  text-decoration: none;
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 768px) {
+  .hamburger-menu {
+    display: flex;
+    z-index: 1000;
+  }
+
+  .navbar {
+    justify-content: flex-start;
+    padding: 1rem 0;
+  }
+
+  .navbar-links {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(25, 25, 25, 0.95);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: left 0.3s ease;
+    z-index: 100;
+  }
+
+  .navbar-links.active {
+    left: 0;
+  }
+
+  .navbar-links li {
+    margin: 0.5rem 0;
+    padding: 0.5rem 0;
+    width: 100%;
+    text-align: center;
+  }
+
+  .navbar-links li a {
+    display: block;
+    width: 100%;
+    padding: 1rem 0;
+  }
+
+  .navbar-links li:not(:last-child)::after {
+    display: none;
+  }
+} 
