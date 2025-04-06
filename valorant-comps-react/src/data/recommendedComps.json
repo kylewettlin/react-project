@@ -1,0 +1,82 @@
+[
+  {
+    "id": 1,
+    "title": "Pro Haven Control",
+    "description": "VCT 2022 common composition focused on map control.",
+    "map": {
+      "name": "Haven",
+      "imagePath": "/images/maps/Haven.png"
+    },
+    "agents": [
+      { "name": "Omen", "imagePath": "/images/agents/Omen.png" },
+      { "name": "Jett", "imagePath": "/images/agents/Jett.png" },
+      { "name": "Chamber", "imagePath": "/images/agents/Chamber.png" },
+      { "name": "Sova", "imagePath": "/images/agents/Sova.png" },
+      { "name": "Sage", "imagePath": "/images/agents/Sage.png" }
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Bind Defensive Setup",
+    "description": "Strong defensive setup with high control and information.",
+    "map": {
+      "name": "Bind",
+      "imagePath": "/images/maps/Bind.png"
+    },
+    "agents": [
+      { "name": "Brimstone", "imagePath": "/images/agents/Brimstone.png" },
+      { "name": "Raze", "imagePath": "/images/agents/Raze.png" },
+      { "name": "Chamber", "imagePath": "/images/agents/Chamber.png" },
+      { "name": "Skye", "imagePath": "/images/agents/Skye.png" },
+      { "name": "Viper", "imagePath": "/images/agents/Viper.png" }
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Fracture Split Push",
+    "description": "Balanced composition with great flexibility for attacking from multiple angles.",
+    "map": {
+      "name": "Fracture",
+      "imagePath": "/images/maps/Fracture.png"
+    },
+    "agents": [
+      { "name": "Brimstone", "imagePath": "/images/agents/Brimstone.png" },
+      { "name": "Phoenix", "imagePath": "/images/agents/Phoenix.png" },
+      { "name": "Jett", "imagePath": "/images/agents/Jett.png" },
+      { "name": "Killjoy", "imagePath": "/images/agents/Killjoy.png" },
+      { "name": "Skye", "imagePath": "/images/agents/Skye.png" }
+    ]
+  },
+  {
+    "id": 4,
+    "title": "Ascent Aggressive",
+    "description": "Aggressive composition for taking map control and executing quickly.",
+    "map": {
+      "name": "Ascent",
+      "imagePath": "/images/maps/Ascent.png"
+    },
+    "agents": [
+      { "name": "Omen", "imagePath": "/images/agents/Omen.png" },
+      { "name": "Reyna", "imagePath": "/images/agents/Reyna.png" },
+      { "name": "Raze", "imagePath": "/images/agents/Raze.png" },
+      { "name": "Sova", "imagePath": "/images/agents/Sova.png" },
+      { "name": "Killjoy", "imagePath": "/images/agents/Killjoy.png" }
+    ]
+  },
+  {
+    "id": 5,
+    "title": "Icebox Control",
+    "description": "Focused on controlling tight angles and vertical spaces unique to Icebox.",
+    "map": {
+      "name": "Icebox",
+      "imagePath": "/images/maps/Icebox.png"
+    },
+    "agents": [
+      { "name": "Viper", "imagePath": "/images/agents/Viper.png" },
+      { "name": "Jett", "imagePath": "/images/agents/Jett.png" },
+      { "name": "Sova", "imagePath": "/images/agents/Sova.png" },
+      { "name": "Sage", "imagePath": "/images/agents/Sage.png" },
+      { "name": "KAY/O", "imagePath": "/images/agents/Kayo.png" }
+    ]
+  }
+] 

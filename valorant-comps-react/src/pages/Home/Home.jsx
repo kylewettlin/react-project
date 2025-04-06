@@ -1,6 +1,6 @@
 import React from 'react';
-import Carousel from '../../components/Carousel/Carousel';
-import FeatureCard from '../../components/FeatureCard/FeatureCard';
+import Carousel from "../../components/Carousel/Carousel.jsx";
+import FeatureCard from "../../components/FeatureCard/FeatureCard.jsx";
 import './Home.css';
 
 const Home = () => {
