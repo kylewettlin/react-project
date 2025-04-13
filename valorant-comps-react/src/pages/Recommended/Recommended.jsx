@@ -45,18 +45,34 @@ const Recommended = () => {
   const [comps, setComps] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [apiSource, setApiSource] = useState(null);
 
   useEffect(() => {
     const fetchRecommendedComps = async () => {
       setIsLoading(true);
+      setError(null);
       
       try {
         // Fetch recommended compositions using our service
         const recommendedComps = await getRecommendedComps();
         setComps(recommendedComps);
+        
+        // Determine if data came from API or local fallback
+        // The local data always uses the same format as the API, so we need to check
+        // a specific property or pattern unique to the API data
+        console.log('Received comps for display:', recommendedComps);
+        
+        // Check if data has unique API properties
+        const isApiData = recommendedComps.length > 0 && 
+          // Check if first comp has expected API properties
+          (recommendedComps[0].map && recommendedComps[0].agents && 
+          recommendedComps[0].strategy && recommendedComps[0].difficulty);
+          
+        setApiSource(isApiData ? 'Valorant API' : 'Local Fallback Data');
       } catch (err) {
         console.error('Error fetching recommended compositions:', err);
         setError('Failed to load recommended compositions. Please try again later.');
+        setApiSource('Error');
       } finally {
         setIsLoading(false);
       }
@@ -65,12 +81,43 @@ const Recommended = () => {
     fetchRecommendedComps();
   }, []);
 
+  const handleRetry = () => {
+    setComps([]);
+    setIsLoading(true);
+    setError(null);
+    setApiSource(null);
+    
+    // Immediately attempt to fetch again
+    getRecommendedComps()
+      .then(data => {
+        setComps(data);
+        
+        // Use same logic as above
+        const isApiData = data.length > 0 && 
+          (data[0].map && data[0].agents && 
+          data[0].strategy && data[0].difficulty);
+          
+        setApiSource(isApiData ? 'Valorant API' : 'Local Fallback Data');
+      })
+      .catch(err => {
+        console.error('Error retrying fetch:', err);
+        setError('Failed to load recommended compositions. Please try again later.');
+        setApiSource('Error');
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
   return (
     <div className="recommended-page">
       {/* Page Header */}
       <section className="page-header">
         <h1>Recommended Compositions</h1>
         <p className="subtitle">Pro-approved agent compositions for each map</p>
+        {apiSource && !isLoading && !error && (
+          <p className="data-source">Data source: {apiSource}</p>
+        )}
       </section>
 
       {/* Cards Section */}
@@ -85,7 +132,7 @@ const Recommended = () => {
         {error && (
           <div className="error-message">
             <p>{error}</p>
-            <button className="retry-btn" onClick={() => window.location.reload()}>
+            <button className="retry-btn" onClick={handleRetry}>
               Retry
             </button>
           </div>
