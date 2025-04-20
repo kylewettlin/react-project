@@ -12,7 +12,7 @@ import './App.css';
 
 function App() {
   return (
-    <Router>
+    <Router basename="/react-project">
       <div className="app">
         <Header />
         <main className="main-content">

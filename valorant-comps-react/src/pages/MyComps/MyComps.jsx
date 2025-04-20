@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import CompCard from '../../components/CompCard/CompCard';
-import { getExampleComps, getUserComps } from '../../services/dataService';
+import EditCompForm from '../../components/EditCompForm/EditCompForm';
+import { getExampleComps, getUserComps, editUserComp } from '../../services/dataService';
 import './MyComps.css';
 
 const MyComps = () => {
@@ -9,9 +10,12 @@ const MyComps = () => {
   const [exampleComps, setExampleComps] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [editingComp, setEditingComp] = useState(null);
+  const [statusMessage, setStatusMessage] = useState({ type: '', text: '' });
 
   const fetchData = async () => {
     setIsLoading(true);
+    setError(null);
     
     try {
       // Fetch user compositions and example compositions using our service
@@ -38,6 +42,59 @@ const MyComps = () => {
   const handleCompDelete = (compId) => {
     // Update the state immediately for better UX
     setUserComps(prevComps => prevComps.filter(comp => comp.id !== compId));
+    setStatusMessage({
+      type: 'success',
+      text: 'Composition successfully deleted!'
+    });
+
+    // Clear success message after 3 seconds
+    setTimeout(() => {
+      setStatusMessage({ type: '', text: '' });
+    }, 3000);
+  };
+
+  // Handle composition edit
+  const handleCompEdit = (comp) => {
+    setEditingComp(comp);
+    setStatusMessage({ type: '', text: '' });
+  };
+
+  // Handle save edit
+  const handleSaveEdit = async (updatedData) => {
+    try {
+      const updatedComp = await editUserComp(editingComp.id, updatedData);
+      
+      // Update the state with the new data
+      setUserComps(prevComps => 
+        prevComps.map(comp => 
+          comp.id === editingComp.id ? updatedComp : comp
+        )
+      );
+      
+      // Clear editing state and show success message
+      setEditingComp(null);
+      setStatusMessage({
+        type: 'success',
+        text: 'Composition successfully updated!'
+      });
+
+      // Clear success message after 3 seconds
+      setTimeout(() => {
+        setStatusMessage({ type: '', text: '' });
+      }, 3000);
+    } catch (err) {
+      console.error('Error updating composition:', err);
+      setStatusMessage({
+        type: 'error',
+        text: 'Failed to update composition. Please try again.'
+      });
+    }
+  };
+
+  // Handle cancel edit
+  const handleCancelEdit = () => {
+    setEditingComp(null);
+    setStatusMessage({ type: '', text: '' });
   };
 
   return (
@@ -47,6 +104,26 @@ const MyComps = () => {
         <h1>My Compositions</h1>
         <p className="subtitle">View and manage your saved compositions</p>
       </section>
+
+      {/* Status Message */}
+      {statusMessage.text && (
+        <div className={`status-message ${statusMessage.type}`}>
+          {statusMessage.text}
+        </div>
+      )}
+
+      {/* Edit Form Modal */}
+      {editingComp && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <EditCompForm
+              comp={editingComp}
+              onSave={handleSaveEdit}
+              onCancel={handleCancelEdit}
+            />
+          </div>
+        </div>
+      )}
 
       {isLoading ? (
         <div className="loading-container">
@@ -86,6 +163,7 @@ const MyComps = () => {
                     comp={comp} 
                     isUserComp={true} 
                     onDelete={handleCompDelete}
+                    onEdit={handleCompEdit}
                   />
                 ))}
               </div>

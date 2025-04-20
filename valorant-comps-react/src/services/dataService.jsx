@@ -191,25 +191,48 @@ export const saveUserComp = async (comp) => {
   }
 };
 
-// Function to delete user composition from localStorage
+// Function to delete user composition
 export const deleteUserComp = async (compId) => {
   try {
-    // Simulate API delay (remove in production)
-    await new Promise(resolve => setTimeout(resolve, 300));
-    
-    // Get existing compositions
-    const existingComps = JSON.parse(localStorage.getItem('userComps')) || [];
-    
-    // Filter out the composition to delete
-    const updatedComps = existingComps.filter(comp => comp.id !== compId);
-    
-    // Save updated list to localStorage
-    localStorage.setItem('userComps', JSON.stringify(updatedComps));
-    
-    return true; // Return success
+    const response = await fetch(`/api/comps/${compId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to delete composition: ${response.statusText}`);
+    }
+
+    return true;
   } catch (error) {
     console.error('Error deleting composition:', error);
     throw new Error('Failed to delete composition');
+  }
+};
+
+// Function to edit user composition
+export const editUserComp = async (compId, updatedData) => {
+  try {
+    const response = await fetch(`/api/comps/${compId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(updatedData)
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || `Failed to update composition: ${response.statusText}`);
+    }
+
+    const updatedComp = await response.json();
+    return updatedComp;
+  } catch (error) {
+    console.error('Error updating composition:', error);
+    throw new Error('Failed to update composition');
   }
 };
 
@@ -260,6 +283,7 @@ export default {
   getMapByValue,
   saveUserComp,
   deleteUserComp,
+  editUserComp,
   getUserComps,
   addComposition
 }; 

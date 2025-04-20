@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { deleteUserComp } from '../../services/dataService';
 import './CompCard.css';
 
-const CompCard = ({ comp, isUserComp, onDelete }) => {
+const CompCard = ({ comp, isUserComp, onDelete, onEdit }) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState(null);
 
@@ -38,19 +38,35 @@ const CompCard = ({ comp, isUserComp, onDelete }) => {
     }
   };
 
+  const handleEdit = (e) => {
+    e.stopPropagation();
+    if (onEdit) {
+      onEdit(comp);
+    }
+  };
+
   return (
     <div className="comp-card">
       <div className="comp-header">
         <h3 className="comp-title">{comp.title || comp.name}</h3>
         {isUserComp && (
-          <button 
-            className={`delete-comp-btn ${isDeleting ? 'deleting' : ''}`}
-            onClick={handleDelete}
-            aria-label="Delete composition"
-            disabled={isDeleting}
-          >
-            {isDeleting ? '...' : '×'}
-          </button>
+          <div className="comp-actions">
+            <button 
+              className="edit-comp-btn"
+              onClick={handleEdit}
+              aria-label="Edit composition"
+            >
+              <i className="fas fa-edit"></i>
+            </button>
+            <button 
+              className={`delete-comp-btn ${isDeleting ? 'deleting' : ''}`}
+              onClick={handleDelete}
+              aria-label="Delete composition"
+              disabled={isDeleting}
+            >
+              {isDeleting ? '...' : '×'}
+            </button>
+          </div>
         )}
       </div>
       
@@ -87,6 +103,14 @@ const CompCard = ({ comp, isUserComp, onDelete }) => {
             </div>
           ))}
         </div>
+
+        {comp.difficulty && (
+          <div className="comp-difficulty">
+            <span className={`difficulty-badge ${comp.difficulty.toLowerCase()}`}>
+              {comp.difficulty}
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );

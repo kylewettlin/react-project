@@ -35,11 +35,18 @@
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
+.comp-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.edit-comp-btn,
 .delete-comp-btn {
   background: none;
   border: none;
   color: rgba(255, 255, 255, 0.8);
-  font-size: 22px;
+  font-size: 18px;
   cursor: pointer;
   width: 28px;
   height: 28px;
@@ -50,9 +57,14 @@
   transition: background-color 0.2s, color 0.2s;
 }
 
+.edit-comp-btn:hover,
 .delete-comp-btn:hover {
   background-color: rgba(255, 255, 255, 0.15);
   color: white;
+}
+
+.delete-comp-btn {
+  font-size: 22px;
 }
 
 .delete-comp-btn.deleting {
@@ -163,4 +175,33 @@
   background-color: rgba(255, 70, 85, 0.1);
   height: 150px;
   text-align: center;
+}
+
+.comp-difficulty {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.difficulty-badge {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 12px;
+  text-transform: uppercase;
+}
+
+.difficulty-badge.easy {
+  background-color: rgba(76, 175, 80, 0.2);
+  color: #4CAF50;
+}
+
+.difficulty-badge.medium {
+  background-color: rgba(255, 152, 0, 0.2);
+  color: #FF9800;
+}
+
+.difficulty-badge.hard {
+  background-color: rgba(244, 67, 54, 0.2);
+  color: #F44336;
 } 
