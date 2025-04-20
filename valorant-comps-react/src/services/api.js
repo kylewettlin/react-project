@@ -2,7 +2,7 @@
 
 // Base URL for the API server
 const API_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://your-valorant-api.onrender.com' // Update this with your actual production URL when deployed
+  ? 'https://valorant-api-ocyo.onrender.com' // Actual Render deployment URL
   : 'http://localhost:3001';
 
 console.log('Using API URL:', API_URL);
