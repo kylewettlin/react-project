@@ -1,8 +1,14 @@
 import agentsData from '../data/agents.json';
 import mapsData from '../data/maps.json';
-import recommendedCompsData from '../data/recommendedComps.json';
 import exampleCompsData from '../data/exampleComps.json';
-import { fetchAllCompositions, createComposition } from './api';
+import { 
+  createComposition, 
+  fetchUserCompositions,
+  fetchRecommendedCompositions,
+  fetchAllCompositions,
+  updateComposition,
+  deleteComposition
+} from './api';
 
 // Map of agent names to their image paths
 const agentImageCache = {};
@@ -122,32 +128,24 @@ export const getMapByValue = async (value) => {
 // Function to fetch recommended compositions
 export const getRecommendedComps = async () => {
   try {
-    // Fetch compositions from API instead of using local data
-    const apiComps = await fetchAllCompositions();
+    // Fetch compositions from the dedicated recommended API endpoint
+    const recommendedComps = await fetchRecommendedCompositions();
     
-    console.log('API compositions received:', apiComps);
+    console.log('Recommended API compositions received:', recommendedComps);
     
-    // Check if the API returned valid data
-    if (apiComps && Array.isArray(apiComps) && apiComps.length > 0) {
-      // Process the data to ensure it has complete agent data
-      const processedData = apiComps.map(processCompData);
-      console.log('Processed API data:', processedData);
-      
-      // Cache and return the data
-      recommendedCompsCache = processedData;
-      return recommendedCompsCache;
-    } else {
-      // If API returned empty or invalid data, throw error to trigger fallback
-      throw new Error('API returned empty or invalid data');
-    }
-  } catch (error) {
-    console.error('Error fetching compositions from API:', error);
+    // Process the data
+    const processedData = recommendedComps.map(processCompData);
     
-    // Fallback to local data if API fails
-    console.log('Falling back to local data');
-    const processedData = recommendedCompsData.map(processCompData);
+    // Optionally cache the data
     recommendedCompsCache = processedData;
     return recommendedCompsCache;
+
+  } catch (error) {
+    console.error('Error fetching recommended compositions from API:', error);
+    // Decide on fallback behavior: return empty array or throw
+    // console.log('Falling back to local data is removed, returning empty array');
+    return []; // Return empty array on error
+    // throw error; // Or re-throw the error
   }
 };
 
@@ -169,89 +167,63 @@ export const getExampleComps = async () => {
   return exampleCompsCache;
 };
 
-// Function to save user composition to localStorage
+// Function to save user composition to localStorage (Keeping for potential offline/demo use?)
+// If this should also use the API, it needs to be updated or removed.
 export const saveUserComp = async (comp) => {
+  // This currently uses localStorage, NOT the API.
   try {
-    // Simulate API delay (remove in production)
-    await new Promise(resolve => setTimeout(resolve, 400));
-    
-    // Get existing compositions
+    await new Promise(resolve => setTimeout(resolve, 400)); 
     const existingComps = JSON.parse(localStorage.getItem('userComps')) || [];
-    
-    // Add new composition
     const updatedComps = [...existingComps, comp];
-    
-    // Save to localStorage
     localStorage.setItem('userComps', JSON.stringify(updatedComps));
-    
-    return comp.id; // Return the ID of the saved composition
+    return comp.id;
   } catch (error) {
-    console.error('Error saving composition:', error);
-    throw new Error('Failed to save composition');
+    console.error('Error saving composition (localStorage):', error);
+    throw new Error('Failed to save composition (localStorage)');
   }
 };
 
-// Function to delete user composition
+// Function to delete user composition (wrapper for API call)
 export const deleteUserComp = async (compId) => {
   try {
-    const response = await fetch(`/api/comps/${compId}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to delete composition: ${response.statusText}`);
-    }
-
-    return true;
+    // Call the API function
+    const success = await deleteComposition(compId);
+    return success;
   } catch (error) {
-    console.error('Error deleting composition:', error);
-    throw new Error('Failed to delete composition');
+    // Error is already logged in api.js, re-throw for UI handling
+    throw new Error('Failed to delete composition'); 
   }
 };
 
-// Function to edit user composition
+// Function to edit user composition (wrapper for API call)
 export const editUserComp = async (compId, updatedData) => {
   try {
-    const response = await fetch(`/api/comps/${compId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(updatedData)
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || `Failed to update composition: ${response.statusText}`);
-    }
-
-    const updatedComp = await response.json();
+    // Call the API function
+    const updatedComp = await updateComposition(compId, updatedData);
     return updatedComp;
   } catch (error) {
-    console.error('Error updating composition:', error);
+    // Error is already logged in api.js, re-throw for UI handling
     throw new Error('Failed to update composition');
   }
 };
 
-// Function to get user compositions from localStorage
+// Function to get user compositions from API
 export const getUserComps = async () => {
   try {
-    // Simulate API delay (remove in production)
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    // Get compositions from localStorage
-    const userComps = JSON.parse(localStorage.getItem('userComps')) || [];
-    
+    // Fetch compositions from the user-specific API endpoint
+    const userComps = await fetchUserCompositions(); 
+
     // Process the data to ensure it has complete agent data
     const processedData = userComps.map(processCompData);
     
+    // TODO: Optionally implement caching for user comps
+
     return processedData;
   } catch (error) {
     console.error('Error loading user compositions:', error);
-    throw new Error('Failed to load user compositions');
+    // Return empty array or handle error as appropriate for your UI
+    return []; 
+    // throw new Error('Failed to load user compositions'); // Or re-throw
   }
 };
 
@@ -261,11 +233,7 @@ export const addComposition = async (composition) => {
     // Call the API to create the composition
     const result = await createComposition(composition);
     
-    // If successful and we have a cache, update it
-    if (result.success && recommendedCompsCache) {
-      const processedComp = processCompData(result.composition);
-      recommendedCompsCache = [...recommendedCompsCache, processedComp];
-    }
+    // TODO: Optionally update a userCompsCache if implementing client-side caching for user comps
     
     return result;
   } catch (error) {

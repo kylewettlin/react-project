@@ -51,14 +51,14 @@ const CompCard = ({ comp, isUserComp, onDelete, onEdit }) => {
         <h3 className="comp-title">{comp.title || comp.name}</h3>
         {isUserComp && (
           <div className="comp-actions">
-            <button 
+            <button
               className="edit-comp-btn"
               onClick={handleEdit}
               aria-label="Edit composition"
             >
               <i className="fas fa-edit"></i>
             </button>
-            <button 
+            <button
               className={`delete-comp-btn ${isDeleting ? 'deleting' : ''}`}
               onClick={handleDelete}
               aria-label="Delete composition"
@@ -69,13 +69,12 @@ const CompCard = ({ comp, isUserComp, onDelete, onEdit }) => {
           </div>
         )}
       </div>
-      
       <div className="comp-content">
         <div className="comp-map">
           {mapData && mapData.imagePath && (
-            <img 
-              src={require(`../../assets${mapData.imagePath}`)} 
-              alt={mapData.name} 
+            <img
+              src={require(`../../assets${mapData.imagePath}`)}
+              alt={mapData.name}
               className="map-thumbnail"
             />
           )}
@@ -83,18 +82,18 @@ const CompCard = ({ comp, isUserComp, onDelete, onEdit }) => {
             {mapData?.name || (typeof comp.map === 'string' ? comp.map : 'Map')}
           </span>
         </div>
-        
+
         <p className="comp-description">{comp.description || comp.strategy}</p>
-        
+
         {error && <p className="error-text">{error}</p>}
-        
+
         <div className="comp-agents">
           {comp.agents.map((agent, index) => (
             <div key={index} className="agent-icon">
               {agent.imagePath ? (
-                <img 
-                  src={require(`../../assets${agent.imagePath}`)} 
-                  alt={agent.name} 
+                <img
+                  src={require(`../../assets${agent.imagePath}`)}
+                  alt={agent.name}
                   title={agent.name}
                 />
               ) : (
@@ -116,4 +115,4 @@ const CompCard = ({ comp, isUserComp, onDelete, onEdit }) => {
   );
 };
 
-export default CompCard; 
+export default CompCard;
